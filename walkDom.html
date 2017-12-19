@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<script>
+// 场景：遍历 DOM 树
+// 方案1：递归模式
+/*function walkDom(node, callback) {
+    if (node === null) { //判断node是否为null
+        return
+    }
+    callback(node) //将node自身传入callback
+    node = node.firstElementChild //改变node为其子元素节点
+    while (node) {  // while很重要
+        walkDom(node, callback) //如果存在子元素，则递归调用walkDom
+        // 如果没有子元素，则遍历其下一个元素兄弟节点
+        node = node.nextElementSibling
+    }
+}
+walkDom(document, function(node) {console.count()}) //包含document节点
+//数量比上面输出的少1，因为不包含document节点
+document.querySelectorAll('*').length */
+
+// 方案2：循环模式
+// 在循环模式中，shift方法可以换成pop，从尾部取出元素；push方法可以换成unshift从头部添加元素。不同的顺序，影响了是「广度优先」还是「深度优先」
+
+function walkDom(node, callback) {
+    if (node === null) {
+        return
+    }
+    var stack = [node] //存入数组
+    var target
+    while(stack.length) { //数组长度不为0，继续循环
+        target = stack.shift() //取出元素
+        callback(target) //传入callback
+        // console.log(stack, target.children)
+        Array.prototype.push.apply(stack, target.children) //将其子元素一股脑推入stack，增加长度
+    }
+}
+walkDom(document, function(node) {console.count()}) //包含document节点
+//数量比上面输出的少1，因为不包含document节点
+console.log(document.querySelectorAll('*').length)
+</script>
+</body>
+</html>
